@@ -43,3 +43,16 @@ func (s *MemoryStore[T]) Delete(id string) {
 	defer s.mu.Unlock()
 	delete(s.data, id)
 }
+
+func (s *MemoryStore[T]) FindByCondition(predicate func(item T) bool) (T, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	var zeroValue T
+	for _, item := range s.data {
+		if predicate(item) {
+			return item, true
+		}
+	}
+	return zeroValue, false
+}

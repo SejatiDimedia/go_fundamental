@@ -154,6 +154,7 @@ func main() {
 		fmt.Println("3. Tambah Stok Barang (Restock)")
 		fmt.Println("4. Transaksi Penjualan (Checkout)")
 		fmt.Println("5. Keluar")
+		fmt.Println("6. Cari Produk")
 
 		choice := readLine(scanner, "Pilih menu (1-5): ")
 
@@ -204,6 +205,20 @@ func main() {
 			fmt.Println("Terima kasih telah menggunakan sistem inventaris. Sampai jumpa!")
 			return
 
+		case "6":
+			keyword := strings.ToLower(readLine(scanner, "Ketik kata kunci nama produk: "))
+
+			foundProduct, exists := productStore.FindByCondition(func(p *domain.Product) bool {
+				return strings.Contains(strings.ToLower(p.Name), keyword)
+			})
+
+			if exists {
+				fmt.Println("\n✅ Produk Ditemukan:")
+				fmt.Printf("ID: %s | Nama: %s | Harga: Rp%d | Stok: %d\n",
+					foundProduct.ID, foundProduct.Name, foundProduct.Price, foundProduct.Stock)
+			} else {
+				fmt.Printf("❌ Tidak ada produk dengan nama yang mengandung %q\n", keyword)
+			}
 		default:
 			fmt.Println("❌ Pilihan menu tidak valid!")
 		}

@@ -1,51 +1,68 @@
 package main
 
 import (
+	"cmp"
 	"fmt"
-	"strings"
 )
 
+// A. Generic Function: Mencari nilai terkecil/minimum dari tipe numerik atau string apa pun
+func Min[T cmp.Ordered](<a, b T>) T {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+// B. Generic In-Memory Repository: Wadah penyimpanan data apa saja (Produk, User, Order)
+type Repository[T any] struct {
+	storage map[string]T
+}
+
+func NewRepository[T any]() *Repository[T] {
+	return &Repository[T]{
+		storage: make(map[string]T),
+	}
+}
+
+func (r *Repository[T]) Save(id string, item T) {
+	r.storage[id] = item
+}
+
+func (r *Repository[T]) FindByID(id string) (T, bool) {
+	item, exists := r.storage[id]
+	return item, exists
+}
+
+// Contoh Struct Domain
+type User struct {
+	Username string
+	Role     string
+}
+
+type ProductItem struct {
+	Title string
+	Price int
+}
+
 func main() {
-	// ==========================================
-	// 1. Membersihkan Input Pengguna (Sanitasi)
-	// ==========================================
-	fmt.Println("=== 1. Sanitasi String ===")
-	rawUserInput := "   budi.santoso@Email.COM \n\t"
-	// Menghapus whitespace di awal/akhir dan mengubah ke huruf kecil
-	cleanedEmail := strings.ToLower(strings.TrimSpace(rawUserInput))
-	fmt.Printf("Input mentah : %q\n", rawUserInput)
-	fmt.Printf("Email bersih : %q\n", cleanedEmail)
-	// ==========================================
-	// 2. Pencarian & Validasi Prefix/Suffix
-	// ==========================================
-	fmt.Println("\n=== 2. Validasi String ===")
-	invoiceNumber := "INV-2026-X8910"
-	isInvoice := strings.HasPrefix(invoiceNumber, "INV-")
-	isPDF := strings.HasSuffix(invoiceNumber, ".pdf")
-	containsYear := strings.Contains(invoiceNumber, "2026")
-	fmt.Printf("Nomor: %s\n", invoiceNumber)
-	fmt.Printf("Apakah berawalan 'INV-'? %t\n", isInvoice)
-	fmt.Printf("Apakah berakhiran '.pdf'? %t\n", isPDF)
-	fmt.Printf("Mengandung tahun 2026? %t\n", containsYear)
-	// ==========================================
-	// 3. Split & Join
-	// ==========================================
-	fmt.Println("\n=== 3. Split & Join ===")
-	tagsInput := "golang,backend,microservices,payment"
-	// Memecah menjadi slice
-	tagList := strings.Split(tagsInput, ",")
-	fmt.Printf("Hasil Split (Slice): %#v (Total: %d tags)\n", tagList, len(tagList))
-	// Menggabungkan kembali dengan pemisah baru
-	hashtagText := "#" + strings.Join(tagList, " #")
-	fmt.Printf("Hasil Join: %s\n", hashtagText)
-	// ==========================================
-	// 4. Sprintf (Membuat formatted string tanpa mencetak langsung)
-	// ==========================================
-	fmt.Println("\n=== 4. fmt.Sprintf ===")
-	orderID := 1204
-	buyer := "Andi"
-	amount := 450000.75
-	// Sprintf menghasilkan string baru yang bisa disimpan ke variabel / database
-	message := fmt.Sprintf("Halo %s, pesanan #%d sejumlah Rp%.2f telah diterima!", buyer, orderID, amount)
-	fmt.Println("Pesan:", message)
+	// 1. Uji Generic Min Function
+	fmt.Println("Min Integer :", Min(100, 45))        // Otomatis tipe int -> 45
+	fmt.Println("Min Float   :", Min(12.5, 3.8))      // Otomatis tipe float64 -> 3.8
+	fmt.Println("Min String  :", Min("Budi", "Andi")) // Mengurutkan alfabet -> "Andi"
+
+	// 2. Uji Generic Repository untuk User
+	userRepo := NewRepository[User]()
+	userRepo.Save("USR-1", User{Username: "john_doe", Role: "Admin"})
+
+	if u, ok := userRepo.FindByID("USR-1"); ok {
+		fmt.Printf("\nUser Ditemukan: %s (%s)\n", u.Username, u.Role)
+	}
+
+	// 3. Uji Generic Repository yang SAMA untuk ProductItem
+	productRepo := NewRepository[ProductItem]()
+	productRepo.Save("PRD-1", ProductItem{Title: "Monitor 4K", Price: 4500000})
+
+	if p, ok := productRepo.FindByID("PRD-1"); ok {
+		fmt.Printf("Produk Ditemukan: %s (Rp%d)\n", p.Title, p.Price)
+	}
 }
