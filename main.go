@@ -1,68 +1,53 @@
 package main
 
 import (
-	"cmp"
-	"fmt"
+	"log/slog"
+	"os"
+	"time"
 )
 
-// A. Generic Function: Mencari nilai terkecil/minimum dari tipe numerik atau string apa pun
-func Min[T cmp.Ordered](<a, b T>) T {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-// B. Generic In-Memory Repository: Wadah penyimpanan data apa saja (Produk, User, Order)
-type Repository[T any] struct {
-	storage map[string]T
-}
-
-func NewRepository[T any]() *Repository[T] {
-	return &Repository[T]{
-		storage: make(map[string]T),
-	}
-}
-
-func (r *Repository[T]) Save(id string, item T) {
-	r.storage[id] = item
-}
-
-func (r *Repository[T]) FindByID(id string) (T, bool) {
-	item, exists := r.storage[id]
-	return item, exists
-}
-
-// Contoh Struct Domain
-type User struct {
-	Username string
-	Role     string
-}
-
-type ProductItem struct {
-	Title string
-	Price int
-}
-
 func main() {
-	// 1. Uji Generic Min Function
-	fmt.Println("Min Integer :", Min(100, 45))        // Otomatis tipe int -> 45
-	fmt.Println("Min Float   :", Min(12.5, 3.8))      // Otomatis tipe float64 -> 3.8
-	fmt.Println("Min String  :", Min("Budi", "Andi")) // Mengurutkan alfabet -> "Andi"
+	// ==========================================================
+	// 1. Text Logger (Format Manusiawi untuk Development Lokal)
+	// ==========================================================
+	textLogger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug, // Tangkap semua level dari Debug sampai Error
+	}))
 
-	// 2. Uji Generic Repository untuk User
-	userRepo := NewRepository[User]()
-	userRepo.Save("USR-1", User{Username: "john_doe", Role: "Admin"})
+	slog.SetDefault(textLogger)
 
-	if u, ok := userRepo.FindByID("USR-1"); ok {
-		fmt.Printf("\nUser Ditemukan: %s (%s)\n", u.Username, u.Role)
-	}
+	slog.Info("Aplikasi E-Commerce Service dimulai",
+		"version", "1.0.0",
+		"port", 8080,
+		"env", "development",
+	)
 
-	// 3. Uji Generic Repository yang SAMA untuk ProductItem
-	productRepo := NewRepository[ProductItem]()
-	productRepo.Save("PRD-1", ProductItem{Title: "Monitor 4K", Price: 4500000})
+	slog.Debug("Inisialisasi koneksi pool database", "max_conns", 20)
 
-	if p, ok := productRepo.FindByID("PRD-1"); ok {
-		fmt.Printf("Produk Ditemukan: %s (Rp%d)\n", p.Title, p.Price)
-	}
+	// ==========================================================
+	// 2. JSON Logger (Standar Wajib Production / Cloud Kubernetes)
+	// ==========================================================
+	jsonLogger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+
+	// Simulasi Transaksi Pembayaran
+	jsonLogger.Info("Transaksi berhasil diproses",
+		slog.String("trx_id", "TRX-998877"),
+		slog.Int("amount", 250000),
+		slog.String("customer_id", "USR-101"),
+		slog.Duration("latency", 45*time.Millisecond),
+		slog.Group("payment_details",
+			slog.String("method", "BCA_VA"),
+			slog.String("status", "PAID"),
+		),
+	)
+
+	// Simulasi Error di Server
+	jsonLogger.Error("Gagal menghubungi Payment Gateway pihak ketiga",
+		slog.String("trx_id", "TRX-998878"),
+		slog.String("gateway", "Midtrans"),
+		slog.String("error_reason", "connection refused / timeout"),
+		slog.Int("http_status", 504),
+	)
 }
