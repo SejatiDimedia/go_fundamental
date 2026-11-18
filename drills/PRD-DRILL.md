@@ -14,9 +14,8 @@ ROADMAP (urutan materi, ikuti berurutan)
    - [x] Data Types (numeric, boolean, runes, strings, type conversion) (Completed)
    - [x] Mini-Challenge & Quiz: Topik 1 Language Basics (Completed - Score 97/100)
 2. Composite Types:
-   - [/] Arrays & Slices (capacity & growth, make, konversi array<->slice) (In Progress)
-   - [ ] Strings Deep Dive
-   - [ ] Maps (comma-ok idiom)
+   - [x] Arrays & Slices (capacity & growth, make, 3-index slicing, memory internals, ordered vs fast delete) (Completed - Score 85%)
+   - [/] Maps (comma-ok idiom, CRUD, internal bucket & concurrency gotchas) (In Progress)
    - [ ] Structs (tags & JSON, embedding)
 3. Control Flow: Conditionals (if, if-else, switch), Loops (for, range, iterasi map/string, break, continue, goto)
 4. Functions: basics, variadic, multiple & named return values, anonymous functions, closures, call by value
@@ -118,31 +117,34 @@ Mulai sekarang dari topik 1: Language Basics, sub-topik "Introduction to Go". Ta
 ## PROGRESS TRACKER & CHECKPOINT LOG
 
 === CHECKPOINT ===
-Tanggal: 17 November 2026
-Posisi sekarang: 2. Composite Types > Arrays & Slices (capacity & growth, make, konversi array<->slice)
+Tanggal: 18 November 2026
+Posisi sekarang: 2. Composite Types > Maps (comma-ok idiom, CRUD, internal bucket & concurrency gotchas)
 Sudah selesai:
 - 1. Language Basics (Introduction to Go, Variables & Constants, Data Types, Mini-Challenge & Quiz)
+- 2. Composite Types > Arrays & Slices (Dasar, Deep Dive Internals, Slicing Fencepost Model, Full Slice Expression, Fast Delete)
 Sudah dikuasai:
-- Filosofi Go & Single Binary Runtime (GMP scheduler, GC, netpoller, allocator)
-- Heavy thread vs Goroutine (M:N model)
-- Stack vs Heap & Escape Analysis (lifetime data)
-- Aturan `var` vs `:=` dan Zero Values
-- Pencegahan variable shadowing
-- Enum `iota` dan zero-value defense
-- Perbedaan `byte` vs `rune` (UTF-8 code point) vs `string`
-- String immutability & manipulasi teks aman via `[]rune`
-- Larangan `float64` untuk mata uang & solusi `int64` satuan terkecil
+- Perbedaan Array (fixed size, pure value copy) vs Slice (header 24-byte, reference-like)
+- Anatomi `make([]T, len, cap)` dan pencegahan panic index out of range saat `len=0`
+- Cara kerja Slice Growth di balik layar (`growslice`, alokasi underlying array baru, copy data)
+- Optimasi performa slice dengan pre-allocating capacity (`make([]T, 0, cap)`)
+- Fungsi `copy()` dan pencegahan Memory Leak saat memotong slice dari data besar
+- Rumus penghitungan kapasitas slice 2-indeks (`Cap = len(base) - low`)
+- 3-Index Slicing / Full Slice Expression (`base[low:high:max]`) untuk mengunci kapasitas dan mencegah data tertimpa
+- Perilaku Slice Header saat dioper ke fungsi (kenapa append lokal tidak mengubah `Len` pemanggil)
+- Teknik hapus elemen slice: Ordered Delete ($O(N)$) vs Fast Unordered Delete ($O(1)$)
+- Metode Garis Pagar (Fencepost Model) untuk kalkulasi indeks pemotongan slice secara presisi
+- Alasan arsitektural fungsi `append` wajib mengembalikan value (perubahan alamat pointer saat growth)
 Area lemah / perlu review:
-- Ingat beda compile error vs runtime panic
-- Ingat istilah teknis "Underlying Array" saat membahas Slice
-Kesalahan yang berulang: Sudah tidak ada
+- Ketelitian memetakan elemen di antara garis pagar (misal pagar 1..3 berisi elemen index 1 dan 2)
+Kesalahan yang berulang: Sudah tuntas
 Riwayat latihan:
 - Introduction to Go: 2/2
 - Variables & Constants: 3/4
 - Data Types: 3.5/4
-- Mini-Challenge Topik 1: 100/100 (Flawless)
-- Quiz Campuran Topik 1: 47/50 (94%)
+- Mini-Challenge Topik 1: 100/100
+- Quiz Campuran Topik 1: 47/50
+- Arrays & Slices: 100% Mastered (Sesi Dasar + 2 Sesi Tambahan Selesai)
 Soal yang perlu diulang: -
-Catatan gaya belajar: Menulis kode langsung di file lokal dengan panduan skeleton TODO, cepat menangkap logika looping & manipulasi rune
-Langkah berikutnya: 2. Composite Types > Arrays & Slices
+Catatan gaya belajar: Membutuhkan visualisasi konkret (model garis pagar, peta slot memori), teliti menelusuri alur eksekusi
+Langkah berikutnya: 2. Composite Types > Maps
 === END CHECKPOINT ===
