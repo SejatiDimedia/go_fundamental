@@ -125,7 +125,7 @@ Sudah selesai:
 - 2. Composite Types (Arrays, Slices, Maps, Structs, Mini-Challenge & Remedial Challenge)
 - 3. Control Flow (Conditionals: if short statement, tagless switch & fallthrough; Loops: for, range, labeled break, Go 1.22 loop variable, string byte vs rune)
 - 4. Functions (multiple return values vs try-catch, named returns & defer mutation, variadic functions & slice unpacking, 100% call-by-value myth debunked, closures & escape analysis)
-- 5. Pointers (operator & vs *, nil pointer dereference, larangan pointer arithmetic, constructor escape analysis, trade-off stack vs heap & GC pressure)
+- 5. Pointers (operator & vs *, nil pointer dereference, larangan pointer arithmetic, constructor escape analysis, trade-off stack vs heap & GC pressure, slice header *[]T mutation, shallow vs deep copy, pointer to pointer **T, optional field PATCH pattern)
 Sudah dikuasai:
 - Perbedaan Array vs Slice dan model memori Header
 - Slicing 2-indeks & 3-indeks (`[low:high:max]`) untuk proteksi kapasitas
@@ -150,13 +150,18 @@ Sudah dikuasai:
 - Variadic parameter `...T` dan pembongkaran slice `s...` (efek modifikasi underlying array)
 - Fakta mutlak: Go adalah 100% Pass-by-Value (tidak ada pass-by-reference sejati)
 - Mekanisme Escape Analysis: bagaimana closure & constructor memindahkan variabel lokal dari Stack ke Heap
-- Operator pointer `&` (address-of) dan `*` (dereference) beserta analogi rumah & kertas alamat
+- Operator pointer `&` (address-of) dan `*` (dereference vs pointer type declaration)
 - Nil pointer dereference panic dan solusinya (alokasi memori sebelum akses field)
 - Alasan arsitektural pelarangan pointer arithmetic (memory safety & eliminasi buffer overflow)
 - Trade-off performa Pointer vs Value: GC pressure & CPU cache misses pada pointer objek kecil
+- Perbedaan `*p = val` (Dereference & Mutasi) vs `p = &val` (Reassignment lokal)
+- Anatomi Slice Header (`Data`, `Len`, `Cap`) & Kapan butuh `*[]T` (misal implementasi `Pop`)
+- Shallow Copy vs Deep Copy pada Struct yang memiliki field pointer (`&Customer{}`)
+- Pointer to Pointer (`**T`) untuk mengalihkan alamat pointer pemanggil
+- Desain Optional Field / PATCH API (`nil` vs Zero-Value) untuk mencegah overwrite data di DB
+- Anti-pattern Pointer Abuse (bahaya nil panic, GC heap pressure, CPU cache miss jika semua field dijadikan pointer)
 Area lemah / perlu review:
-- Zero value pointer adalah `nil`, selalu alokasikan struct (`&MyStruct{}`) sebelum mengisi field-nya
-- Mengoper nilai biasa (`w Wallet`) membuat salinan di stack, perubahan di dalam fungsi tidak merubah data pemanggil
+- Sudah tuntas seluruhnya (Pointer Masterclass selesai)
 Kesalahan yang berulang: Sudah tuntas
 Riwayat latihan:
 - Introduction to Go: 2/2
@@ -172,7 +177,7 @@ Riwayat latihan:
 - Remedial Challenge Topik 2 (Fintech Wallet): 100/100
 - Control Flow: 100% Mastered (Skor 95%)
 - Functions: 3.5/4 (Skor 92%)
-- Pointers: 3.5/4 (Skor 88%)
+- Pointers: 100% Mastered (Skor 100% - Masterclass Level 1-4 Complete)
 Soal yang perlu diulang: -
 Catatan gaya belajar: Membutuhkan visualisasi konkret (model garis pagar, peta slot memori), teliti menelusuri alur eksekusi
 Langkah berikutnya: 6. Methods and Interfaces: methods vs functions, pointer vs value receivers, interfaces (empty interface, embedding, type assertion, type switch)

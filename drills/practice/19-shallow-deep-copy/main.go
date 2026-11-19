@@ -12,27 +12,30 @@ type Order struct {
 }
 
 func main() {
-	cust := &Customer{Name: "Alice"}
+	fmt.Println("=== 1. SKENARIO SHALLOW COPY (BUG) ===")
+	cust1 := &Customer{Name: "Alice"}
+	order1 := Order{ID: "ORD-001", Customer: cust1}
+	order2 := order1 // Shallow copy: menyalin alamat pointer cust1
 
-	order1 := Order{
-		ID:       "ORD-001",
-		Customer: cust,
+	order2.ID = "ORD-002"
+	order2.Customer.Name = "Bob" // Merusak order1!
+
+	fmt.Printf("order1 (Customer Addr: %p): ID=%s, Customer.Name=%s\n", order1.Customer, order1.ID, order1.Customer.Name)
+	fmt.Printf("order2 (Customer Addr: %p): ID=%s, Customer.Name=%s\n\n", order2.Customer, order2.ID, order2.Customer.Name)
+
+	fmt.Println("=== 2. SKENARIO DEEP COPY (SOLUSI) ===")
+	custOriginal := &Customer{Name: "Alice"}
+	orderOrig := Order{ID: "ORD-001", Customer: custOriginal}
+
+	// Deep copy: alokasikan struct Customer baru dengan &Customer{}
+	orderCloned := orderOrig
+	orderCloned.Customer = &Customer{
+		Name: orderOrig.Customer.Name, // Duplikasi nilai string-nya ke rumah baru
 	}
 
-	fmt.Printf("Alamat Customer asli: %p\n", cust)
-	fmt.Printf("order1: ID=%s, CustomerPtr=%p, Name=%s\n\n", order1.ID, order1.Customer, order1.Customer.Name)
+	orderCloned.ID = "ORD-002"
+	orderCloned.Customer.Name = "Bob" // Aman, tidak merusak orderOrig!
 
-	// Shallow copy
-	order2 := order1
-	fmt.Printf("order2 (setelah copy): ID=%s, CustomerPtr=%p, Name=%s\n\n", order2.ID, order2.Customer, order2.Customer.Name)
-
-	// Modifikasi order2
-	order2.ID = "ORD-002"
-	order2.Customer.Name = "Bob"
-
-	fmt.Println("--- Hasil Setelah order2 Dimodifikasi ---")
-	fmt.Println("1. order1.ID =", order1.ID)
-	fmt.Println("2. order1.Customer.Name =", order1.Customer.Name)
-	fmt.Println("   order2.ID =", order2.ID)
-	fmt.Println("   order2.Customer.Name =", order2.Customer.Name)
+	fmt.Printf("orderOrig   (Customer Addr: %p): ID=%s, Customer.Name=%s\n", orderOrig.Customer, orderOrig.ID, orderOrig.Customer.Name)
+	fmt.Printf("orderCloned (Customer Addr: %p): ID=%s, Customer.Name=%s\n", orderCloned.Customer, orderCloned.ID, orderCloned.Customer.Name)
 }
