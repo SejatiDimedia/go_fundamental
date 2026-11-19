@@ -19,7 +19,7 @@ ROADMAP (urutan materi, ikuti berurutan)
    - [x] Structs (tags & JSON, embedding) (Completed - Score 90%)
    - [x] Mini-Challenge & Quiz: Topik 2 Composite Types (Completed - Score 100/100)
 3. Control Flow: Conditionals (if, if-else, switch), Loops (for, range, iterasi map/string, break, continue, goto) (Completed - Score 95%)
-4. Functions: basics, variadic, multiple & named return values, anonymous functions, closures, call by value
+4. Functions: basics, variadic, multiple & named return values, anonymous functions, closures, call by value (Completed - Score 92%)
 5. Pointers: basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection
 6. Methods and Interfaces: methods vs functions, pointer vs value receivers, interfaces (empty interface, embedding, type assertion, type switch)
 7. Generics: why generics, generic functions & types, type constraints, type inference
@@ -118,12 +118,13 @@ Mulai sekarang dari topik 1: Language Basics, sub-topik "Introduction to Go". Ta
 ## PROGRESS TRACKER & CHECKPOINT LOG
 
 === CHECKPOINT ===
-Tanggal: 18 November 2026
-Posisi sekarang: 4. Functions (basics, variadic, multiple & named returns, closures, call by value)
+Tanggal: 19 November 2026
+Posisi sekarang: 5. Pointers (basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection)
 Sudah selesai:
 - 1. Language Basics (Introduction to Go, Variables & Constants, Data Types, Mini-Challenge & Quiz)
 - 2. Composite Types (Arrays, Slices, Maps, Structs, Mini-Challenge & Remedial Challenge)
 - 3. Control Flow (Conditionals: if short statement, tagless switch & fallthrough; Loops: for, range, labeled break, Go 1.22 loop variable, string byte vs rune)
+- 4. Functions (multiple return values vs try-catch, named returns & defer mutation, variadic functions & slice unpacking, 100% call-by-value myth debunked, closures & escape analysis)
 Sudah dikuasai:
 - Perbedaan Array vs Slice dan model memori Header
 - Slicing 2-indeks & 3-indeks (`[low:high:max]`) untuk proteksi kapasitas
@@ -146,9 +147,13 @@ Sudah dikuasai:
 - Perbedaan iterasi string: byte index (`s[i]`) vs rune decoding (`for idx, r := range s`)
 - Jebakan defer di dalam loop (file descriptor leak) & solusinya via anonymous function scope
 - Evaluasi snapshot batas iterasi for range pada slice (mencegah loop tak terduga saat append)
+- Multiple returns vs exceptions: error sebagai ordinary value eksplisit
+- Manipulasi named return values oleh `defer` closure sebelum return fisik
+- Variadic parameter `...T` dan pembongkaran slice `s...` (efek modifikasi underlying array)
+- Fakta mutlak: Go adalah 100% Pass-by-Value (tidak ada pass-by-reference sejati)
+- Mekanisme Escape Analysis: bagaimana closure memindahkan variabel lokal dari Stack ke Heap
 Area lemah / perlu review:
-- String `len()` mengembalikan jumlah byte, bukan karakter; emoji/non-Latin memakan multi-byte
-- Menulis ke `nil map` selalu panic (`assignment to entry in nil map`)
+- Perhitungan min/max: hindari jebakan zero value `0` pada named return dengan menginisialisasi dari elemen pertama `numbers[0]`
 Kesalahan yang berulang: Sudah tuntas
 Riwayat latihan:
 - Introduction to Go: 2/2
@@ -163,7 +168,8 @@ Riwayat latihan:
 - Mini-Challenge Topik 2: 100/100
 - Remedial Challenge Topik 2 (Fintech Wallet): 100/100
 - Control Flow: 100% Mastered (Skor 95%)
+- Functions: 3.5/4 (Skor 92%)
 Soal yang perlu diulang: -
 Catatan gaya belajar: Membutuhkan visualisasi konkret (model garis pagar, peta slot memori), teliti menelusuri alur eksekusi
-Langkah berikutnya: 4. Functions: basics, variadic, multiple & named return values, anonymous functions, closures, call by value
+Langkah berikutnya: 5. Pointers: basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection
 === END CHECKPOINT ===
