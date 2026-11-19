@@ -68,3 +68,23 @@ func CreateCounter() func() int {
 * **Kenapa `count` tidak mati saat `CreateCounter` selesai?**
   Compiler Go menjalankan **Escape Analysis**: karena `count` masih dirujuk oleh fungsi anonim di luar, compiler memindahkan alokasi `count` dari **Stack** ke **Heap** (*count escapes to heap*).
 * Variabel di Heap tetap hidup selama closure masih memegangnya, dan baru dibersihkan oleh Garbage Collector saat sudah tidak ada referensi.
+
+---
+
+## 6. Timing Evaluasi Argumen pada `defer`
+
+1. **Argumen Langsung (`defer fmt.Println(a)`):**
+   * Nilai argumen dievaluasi dan dikunci **pada saat baris `defer` dipanggil**.
+   * Jika `a` diubah setelahnya, nilai yang dicetak tetap nilai saat baris `defer` dibaca.
+2. **Closure (`defer func() { fmt.Println(b) }()`):**
+   * Tidak ada argumen yang dikunci. Variabel `b` ditangkap oleh referensi.
+   * Nilai `b` baru dibaca **saat fungsi anonim dieksekusi di akhir fungsi**.
+
+---
+
+## 7. Functions as First-Class Citizens (Callbacks)
+
+Fungsi di Go dapat dioper sebagai parameter:
+* `myFunc` (tanpa tanda kurung): Mengoper referensi objek fungsinya.
+* `myFunc()` (dengan tanda kurung): Menjalankan fungsinya sekarang juga dan menghasilkan return value-nya.
+* Saat mengoper callback ke parameter bertipe `func(...)`: **Hanya kirimkan nama fungsinya tanpa tanda kurung**.

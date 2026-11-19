@@ -20,7 +20,7 @@ ROADMAP (urutan materi, ikuti berurutan)
    - [x] Mini-Challenge & Quiz: Topik 2 Composite Types (Completed - Score 100/100)
 3. Control Flow: Conditionals (if, if-else, switch), Loops (for, range, iterasi map/string, break, continue, goto) (Completed - Score 95%)
 4. Functions: basics, variadic, multiple & named return values, anonymous functions, closures, call by value (Completed - Score 92%)
-5. Pointers: basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection
+5. Pointers: basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection (Completed - Score 88%)
 6. Methods and Interfaces: methods vs functions, pointer vs value receivers, interfaces (empty interface, embedding, type assertion, type switch)
 7. Generics: why generics, generic functions & types, type constraints, type inference
 8. Error Handling: error interface, errors.New, fmt.Errorf, wrapping/unwrapping, sentinel errors, panic & recover, stack traces & debugging
@@ -119,12 +119,13 @@ Mulai sekarang dari topik 1: Language Basics, sub-topik "Introduction to Go". Ta
 
 === CHECKPOINT ===
 Tanggal: 19 November 2026
-Posisi sekarang: 5. Pointers (basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection)
+Posisi sekarang: 6. Methods and Interfaces (methods vs functions, pointer vs value receivers, interfaces, empty interface, type assertion, type switch)
 Sudah selesai:
 - 1. Language Basics (Introduction to Go, Variables & Constants, Data Types, Mini-Challenge & Quiz)
 - 2. Composite Types (Arrays, Slices, Maps, Structs, Mini-Challenge & Remedial Challenge)
 - 3. Control Flow (Conditionals: if short statement, tagless switch & fallthrough; Loops: for, range, labeled break, Go 1.22 loop variable, string byte vs rune)
 - 4. Functions (multiple return values vs try-catch, named returns & defer mutation, variadic functions & slice unpacking, 100% call-by-value myth debunked, closures & escape analysis)
+- 5. Pointers (operator & vs *, nil pointer dereference, larangan pointer arithmetic, constructor escape analysis, trade-off stack vs heap & GC pressure)
 Sudah dikuasai:
 - Perbedaan Array vs Slice dan model memori Header
 - Slicing 2-indeks & 3-indeks (`[low:high:max]`) untuk proteksi kapasitas
@@ -139,21 +140,23 @@ Sudah dikuasai:
 - The Map Memory Retention Trap & solusi pembersihan memori
 - Aturan visibility huruf besar/kecil dan dampaknya pada `encoding/json`
 - Struct Embedding & Field Promotion / Shadowing (Composition over Inheritance)
-- Kriteria pemilihan pass-by-value vs pass-by-pointer pada struct
 - Scope isolation pada `if` short statement (`if err := f(); err != nil`)
 - Karakteristik `switch` (default break, fallthrough, tagless switch)
 - Labeled Break (`break LoopLabel`) untuk memutus `for` loop dari dalam `switch`
 - Perubahan semantik loop variable di Go 1.22+ (alokasi memori unik per iterasi)
 - Perbedaan iterasi string: byte index (`s[i]`) vs rune decoding (`for idx, r := range s`)
-- Jebakan defer di dalam loop (file descriptor leak) & solusinya via anonymous function scope
-- Evaluasi snapshot batas iterasi for range pada slice (mencegah loop tak terduga saat append)
 - Multiple returns vs exceptions: error sebagai ordinary value eksplisit
 - Manipulasi named return values oleh `defer` closure sebelum return fisik
 - Variadic parameter `...T` dan pembongkaran slice `s...` (efek modifikasi underlying array)
 - Fakta mutlak: Go adalah 100% Pass-by-Value (tidak ada pass-by-reference sejati)
-- Mekanisme Escape Analysis: bagaimana closure memindahkan variabel lokal dari Stack ke Heap
+- Mekanisme Escape Analysis: bagaimana closure & constructor memindahkan variabel lokal dari Stack ke Heap
+- Operator pointer `&` (address-of) dan `*` (dereference) beserta analogi rumah & kertas alamat
+- Nil pointer dereference panic dan solusinya (alokasi memori sebelum akses field)
+- Alasan arsitektural pelarangan pointer arithmetic (memory safety & eliminasi buffer overflow)
+- Trade-off performa Pointer vs Value: GC pressure & CPU cache misses pada pointer objek kecil
 Area lemah / perlu review:
-- Perhitungan min/max: hindari jebakan zero value `0` pada named return dengan menginisialisasi dari elemen pertama `numbers[0]`
+- Zero value pointer adalah `nil`, selalu alokasikan struct (`&MyStruct{}`) sebelum mengisi field-nya
+- Mengoper nilai biasa (`w Wallet`) membuat salinan di stack, perubahan di dalam fungsi tidak merubah data pemanggil
 Kesalahan yang berulang: Sudah tuntas
 Riwayat latihan:
 - Introduction to Go: 2/2
@@ -169,7 +172,8 @@ Riwayat latihan:
 - Remedial Challenge Topik 2 (Fintech Wallet): 100/100
 - Control Flow: 100% Mastered (Skor 95%)
 - Functions: 3.5/4 (Skor 92%)
+- Pointers: 3.5/4 (Skor 88%)
 Soal yang perlu diulang: -
 Catatan gaya belajar: Membutuhkan visualisasi konkret (model garis pagar, peta slot memori), teliti menelusuri alur eksekusi
-Langkah berikutnya: 5. Pointers: basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection
+Langkah berikutnya: 6. Methods and Interfaces: methods vs functions, pointer vs value receivers, interfaces (empty interface, embedding, type assertion, type switch)
 === END CHECKPOINT ===
