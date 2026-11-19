@@ -20,8 +20,8 @@ ROADMAP (urutan materi, ikuti berurutan)
    - [x] Mini-Challenge & Quiz: Topik 2 Composite Types (Completed - Score 100/100)
 3. Control Flow: Conditionals (if, if-else, switch), Loops (for, range, iterasi map/string, break, continue, goto) (Completed - Score 95%)
 4. Functions: basics, variadic, multiple & named return values, anonymous functions, closures, call by value (Completed - Score 92%)
-5. Pointers: basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection (Completed - Score 88%)
-6. Methods and Interfaces: methods vs functions, pointer vs value receivers, interfaces (empty interface, embedding, type assertion, type switch)
+5. Pointers: basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection (Completed - Score 100%)
+6. Methods and Interfaces: methods vs functions, pointer vs value receivers, interfaces (empty interface, embedding, type assertion, type switch) (Completed - Score 95%)
 7. Generics: why generics, generic functions & types, type constraints, type inference
 8. Error Handling: error interface, errors.New, fmt.Errorf, wrapping/unwrapping, sentinel errors, panic & recover, stack traces & debugging
 9. Code Organization: modules & dependencies (go mod init/tidy/vendor), packages, import rules, 3rd party packages, publishing modules
@@ -119,13 +119,14 @@ Mulai sekarang dari topik 1: Language Basics, sub-topik "Introduction to Go". Ta
 
 === CHECKPOINT ===
 Tanggal: 19 November 2026
-Posisi sekarang: 6. Methods and Interfaces (methods vs functions, pointer vs value receivers, interfaces, empty interface, type assertion, type switch)
+Posisi sekarang: 7. Generics (why generics, generic functions & types, type constraints, type inference)
 Sudah selesai:
 - 1. Language Basics (Introduction to Go, Variables & Constants, Data Types, Mini-Challenge & Quiz)
 - 2. Composite Types (Arrays, Slices, Maps, Structs, Mini-Challenge & Remedial Challenge)
 - 3. Control Flow (Conditionals: if short statement, tagless switch & fallthrough; Loops: for, range, labeled break, Go 1.22 loop variable, string byte vs rune)
 - 4. Functions (multiple return values vs try-catch, named returns & defer mutation, variadic functions & slice unpacking, 100% call-by-value myth debunked, closures & escape analysis)
 - 5. Pointers (operator & vs *, nil pointer dereference, larangan pointer arithmetic, constructor escape analysis, trade-off stack vs heap & GC pressure, slice header *[]T mutation, shallow vs deep copy, pointer to pointer **T, optional field PATCH pattern)
+- 6. Methods and Interfaces (methods vs functions, pointer vs value receivers, map addressability trap, sync.Mutex lock safety, duck typing, method sets T vs *T, empty interface any, type assertion & switch, interface embedding, accept interfaces return structs)
 Sudah dikuasai:
 - Perbedaan Array vs Slice dan model memori Header
 - Slicing 2-indeks & 3-indeks (`[low:high:max]`) untuk proteksi kapasitas
@@ -160,8 +161,18 @@ Sudah dikuasai:
 - Pointer to Pointer (`**T`) untuk mengalihkan alamat pointer pemanggil
 - Desain Optional Field / PATCH API (`nil` vs Zero-Value) untuk mencegah overwrite data di DB
 - Anti-pattern Pointer Abuse (bahaya nil panic, GC heap pressure, CPU cache miss jika semua field dijadikan pointer)
+- Perbedaan Value Receiver (copy memori) vs Pointer Receiver (mutasi data asli & nil receiver handling)
+- The Map Method Trap: ketidakmampuan memanggil pointer method pada map value & solusi `map[K]*V`
+- Concurrency Safety: larangan keras Value Receiver pada struct dengan `sync.Mutex` (pass-by-value broken lock)
+- Implicit Interface Satisfaction (Duck Typing) tanpa keyword `implements`
+- Aturan Method Sets (`T` hanya punya value methods, `*T` punya pointer + value methods)
+- Empty Interface `any` & Type Assertion (`val, ok := data.(T)`) untuk mencegah runtime panic
+- Pola Type Switch (`switch v := data.(type)`) untuk inspeksi multi-tipe dinamis
+- Interface Embedding / Composition untuk membentuk kontrak modular
+- Kaidah arsitektur Go: "Accept Interfaces, Return Structs" untuk loose coupling dan mocking unit test
 Area lemah / perlu review:
-- Sudah tuntas seluruhnya (Pointer Masterclass selesai)
+- Penempatan tanda `*` pada pointer receiver harus pada tipe data: `func (w *Wallet)` bukan `func (*w Wallet)`
+- Type assertion `input.(T)` bukan konversi/parsing tipe data, selalu gunakan idiom comma-ok untuk mencegah panic
 Kesalahan yang berulang: Sudah tuntas
 Riwayat latihan:
 - Introduction to Go: 2/2
@@ -178,7 +189,8 @@ Riwayat latihan:
 - Control Flow: 100% Mastered (Skor 95%)
 - Functions: 3.5/4 (Skor 92%)
 - Pointers: 100% Mastered (Skor 100% - Masterclass Level 1-4 Complete)
+- Methods & Interfaces: 100% Mastered (Skor 95%)
 Soal yang perlu diulang: -
 Catatan gaya belajar: Membutuhkan visualisasi konkret (model garis pagar, peta slot memori), teliti menelusuri alur eksekusi
-Langkah berikutnya: 6. Methods and Interfaces: methods vs functions, pointer vs value receivers, interfaces (empty interface, embedding, type assertion, type switch)
+Langkah berikutnya: 7. Generics: why generics, generic functions & types, type constraints, type inference
 === END CHECKPOINT ===
