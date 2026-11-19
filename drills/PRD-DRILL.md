@@ -15,9 +15,10 @@ ROADMAP (urutan materi, ikuti berurutan)
    - [x] Mini-Challenge & Quiz: Topik 1 Language Basics (Completed - Score 97/100)
 2. Composite Types:
    - [x] Arrays & Slices (capacity & growth, make, 3-index slicing, memory internals, ordered vs fast delete) (Completed - Score 85%)
-   - [/] Maps (comma-ok idiom, CRUD, internal bucket & concurrency gotchas) (In Progress)
-   - [ ] Structs (tags & JSON, embedding)
-3. Control Flow: Conditionals (if, if-else, switch), Loops (for, range, iterasi map/string, break, continue, goto)
+   - [x] Maps (comma-ok idiom, CRUD, internal bucket & concurrency gotchas) (Completed - Score 90%)
+   - [x] Structs (tags & JSON, embedding) (Completed - Score 90%)
+   - [x] Mini-Challenge & Quiz: Topik 2 Composite Types (Completed - Score 100/100)
+3. Control Flow: Conditionals (if, if-else, switch), Loops (for, range, iterasi map/string, break, continue, goto) (Completed - Score 95%)
 4. Functions: basics, variadic, multiple & named return values, anonymous functions, closures, call by value
 5. Pointers: basics, pointers dengan struct, dengan map & slice, overview memory management & garbage collection
 6. Methods and Interfaces: methods vs functions, pointer vs value receivers, interfaces (empty interface, embedding, type assertion, type switch)
@@ -118,24 +119,36 @@ Mulai sekarang dari topik 1: Language Basics, sub-topik "Introduction to Go". Ta
 
 === CHECKPOINT ===
 Tanggal: 18 November 2026
-Posisi sekarang: 2. Composite Types > Maps (comma-ok idiom, CRUD, internal bucket & concurrency gotchas)
+Posisi sekarang: 4. Functions (basics, variadic, multiple & named returns, closures, call by value)
 Sudah selesai:
 - 1. Language Basics (Introduction to Go, Variables & Constants, Data Types, Mini-Challenge & Quiz)
-- 2. Composite Types > Arrays & Slices (Dasar, Deep Dive Internals, Slicing Fencepost Model, Full Slice Expression, Fast Delete)
+- 2. Composite Types (Arrays, Slices, Maps, Structs, Mini-Challenge & Remedial Challenge)
+- 3. Control Flow (Conditionals: if short statement, tagless switch & fallthrough; Loops: for, range, labeled break, Go 1.22 loop variable, string byte vs rune)
 Sudah dikuasai:
-- Perbedaan Array (fixed size, pure value copy) vs Slice (header 24-byte, reference-like)
-- Anatomi `make([]T, len, cap)` dan pencegahan panic index out of range saat `len=0`
-- Cara kerja Slice Growth di balik layar (`growslice`, alokasi underlying array baru, copy data)
-- Optimasi performa slice dengan pre-allocating capacity (`make([]T, 0, cap)`)
-- Fungsi `copy()` dan pencegahan Memory Leak saat memotong slice dari data besar
-- Rumus penghitungan kapasitas slice 2-indeks (`Cap = len(base) - low`)
-- 3-Index Slicing / Full Slice Expression (`base[low:high:max]`) untuk mengunci kapasitas dan mencegah data tertimpa
-- Perilaku Slice Header saat dioper ke fungsi (kenapa append lokal tidak mengubah `Len` pemanggil)
-- Teknik hapus elemen slice: Ordered Delete ($O(N)$) vs Fast Unordered Delete ($O(1)$)
-- Metode Garis Pagar (Fencepost Model) untuk kalkulasi indeks pemotongan slice secara presisi
-- Alasan arsitektural fungsi `append` wajib mengembalikan value (perubahan alamat pointer saat growth)
+- Perbedaan Array vs Slice dan model memori Header
+- Slicing 2-indeks & 3-indeks (`[low:high:max]`) untuk proteksi kapasitas
+- Pencegahan memory leak slice via `copy()`
+- Teknik pemotongan slice: Ordered Delete via `append(s[:i], s[i+1:]...)`
+- Model Garis Pagar (Fencepost Model) dan fungsi variadic ellipsis `...`
+- Anatomi internal map (`runtime.hmap`, bucket `bmap`, hash seed)
+- Perilaku Nil Map (read aman, write panic)
+- Syarat mutlak Map Key tipe `comparable` (slice/map/func dilarang)
+- Pola "Cari lalu Akumulasi/Update, jika belum ada Append" pada slice struct
+- The Addressability Trap pada struct di dalam map & solusi pointer / copy-reassign
+- The Map Memory Retention Trap & solusi pembersihan memori
+- Aturan visibility huruf besar/kecil dan dampaknya pada `encoding/json`
+- Struct Embedding & Field Promotion / Shadowing (Composition over Inheritance)
+- Kriteria pemilihan pass-by-value vs pass-by-pointer pada struct
+- Scope isolation pada `if` short statement (`if err := f(); err != nil`)
+- Karakteristik `switch` (default break, fallthrough, tagless switch)
+- Labeled Break (`break LoopLabel`) untuk memutus `for` loop dari dalam `switch`
+- Perubahan semantik loop variable di Go 1.22+ (alokasi memori unik per iterasi)
+- Perbedaan iterasi string: byte index (`s[i]`) vs rune decoding (`for idx, r := range s`)
+- Jebakan defer di dalam loop (file descriptor leak) & solusinya via anonymous function scope
+- Evaluasi snapshot batas iterasi for range pada slice (mencegah loop tak terduga saat append)
 Area lemah / perlu review:
-- Ketelitian memetakan elemen di antara garis pagar (misal pagar 1..3 berisi elemen index 1 dan 2)
+- String `len()` mengembalikan jumlah byte, bukan karakter; emoji/non-Latin memakan multi-byte
+- Menulis ke `nil map` selalu panic (`assignment to entry in nil map`)
 Kesalahan yang berulang: Sudah tuntas
 Riwayat latihan:
 - Introduction to Go: 2/2
@@ -143,8 +156,14 @@ Riwayat latihan:
 - Data Types: 3.5/4
 - Mini-Challenge Topik 1: 100/100
 - Quiz Campuran Topik 1: 47/50
-- Arrays & Slices: 100% Mastered (Sesi Dasar + 2 Sesi Tambahan Selesai)
+- Arrays & Slices: 100% Mastered
+- Maps: 100% Mastered (Skor 95%)
+- Structs: 3.5/4 (Skor 88%)
+- Quiz Campuran Topik 2: 3/5 (60%)
+- Mini-Challenge Topik 2: 100/100
+- Remedial Challenge Topik 2 (Fintech Wallet): 100/100
+- Control Flow: 100% Mastered (Skor 95%)
 Soal yang perlu diulang: -
 Catatan gaya belajar: Membutuhkan visualisasi konkret (model garis pagar, peta slot memori), teliti menelusuri alur eksekusi
-Langkah berikutnya: 2. Composite Types > Maps
+Langkah berikutnya: 4. Functions: basics, variadic, multiple & named return values, anonymous functions, closures, call by value
 === END CHECKPOINT ===
